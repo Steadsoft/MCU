@@ -3,6 +3,7 @@
 
 #define ON 1
 #define OFF 0
+#define TASKS 3
 
 typedef enum state_st
 {
@@ -29,7 +30,7 @@ void system_interrupt();
 void initialize_task(Task_ptr, State, int, int, int, ActionFunc);
 void set_led(int, int);
 
-static Task tasks[6];   // six task instances, not yet initialized
+static Task tasks[TASKS];   // three task instances, not yet initialized
 
 int main()
 {
@@ -79,7 +80,7 @@ void initialize_task(Task_ptr task_ptr, State initial, int duration, int led, in
 void system_interrupt()
 {
 
-    for (int I = 0; I < 6; I++)
+    for (int I = 0; I < TASKS; I++)
     {
         if (tasks[I].state == RUNNING)
         {

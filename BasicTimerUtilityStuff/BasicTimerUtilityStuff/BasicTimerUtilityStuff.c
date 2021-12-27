@@ -25,7 +25,7 @@ typedef struct task_st
 } Task, * Task_ptr;
 
 void expiration_handler(int);
-void interrupt();
+void system_interrupt();
 void initialize_task(Task_ptr, State, int, int, int, ActionFunc);
 void set_led(int, int);
 
@@ -34,6 +34,8 @@ static Task tasks[6];   // six task instances, not yet initialized
 int main()
 {
     // Initialize all the tasks, none are 'running' just yet
+    // we bgin by creating all tasks in stopped state and also specify 
+    // the state the LED is to go after the first expiry.
 
     initialize_task(&tasks[0], STOPPED, 100, 1, OFF, expiration_handler); 
     initialize_task(&tasks[1], STOPPED, 200, 2, OFF, expiration_handler); 
@@ -42,6 +44,9 @@ int main()
     set_led(1, ON);
     set_led(2, ON);
     set_led(3, ON);
+
+    // OK, after this step the system interrupt handler will 
+    // process these tasks.
 
     tasks[0].state = RUNNING;
     tasks[1].state = RUNNING;
@@ -52,8 +57,11 @@ int main()
 
 void expiration_handler(int task_id)
 {
+    // change LED state
     set_led(tasks[task_id].led, tasks[task_id].next_state);
+    // set the state that we'll set it to next to simply be the opposite 
     tasks[task_id].next_state = !tasks[task_id].next_state;
+    // since this timer/task was stopped we start it afresh.
     tasks[task_id].state = RUNNING; // restar this task
 }
 
@@ -68,7 +76,7 @@ void initialize_task(Task_ptr task_ptr, State initial, int duration, int led, in
 }
 
 // This is called by the system, timer interrupt etc, assume every 10 mS
-void interrupt()
+void system_interrupt()
 {
 
     for (int I = 0; I < 6; I++)
@@ -85,7 +93,6 @@ void interrupt()
             }
         }
     }
-
 }
 
 void set_led(int LED, int state)

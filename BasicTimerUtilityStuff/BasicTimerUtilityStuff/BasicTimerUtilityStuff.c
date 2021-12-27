@@ -12,7 +12,7 @@ typedef enum state_st
     PAUSED
 } State;
 
-typedef void (*ActionFunc)(Task_ptr);
+typedef void (*ActionFunc)(int);
 
 typedef struct task_st
 {

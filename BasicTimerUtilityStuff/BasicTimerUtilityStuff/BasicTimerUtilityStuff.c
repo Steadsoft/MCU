@@ -30,6 +30,8 @@ void system_interrupt();
 void initialize_task(Task_ptr, State, int, int, int, ActionFunc);
 void set_led(int, int);
 
+// we'll use an array here, ideally a list would be better for a host of reasons.
+
 static Task tasks[TASKS];   // three task instances, not yet initialized
 
 int main()
